@@ -45,3 +45,26 @@ export const getDrafts = async (req, res) => {
 		sendErrorResponse(res, err);
 	}
 };
+
+export const likeBlogHandler = async (req, res) => {
+	try {
+		const blog = await getBlog(req.query.blogId);
+
+		var likes = blog.likes || [];
+
+		let ind = likes.indexOf(req.user.id);
+
+		if (ind > -1) likes.pop(ind);
+		else likes.push(req.user.id);
+
+		blog.likes = likes;
+
+		await blog.save();
+
+		console.log(blog);
+
+		sendSuccessResponse(res, blog);
+	} catch (err) {
+		sendErrorResponse(res, err);
+	}
+};
