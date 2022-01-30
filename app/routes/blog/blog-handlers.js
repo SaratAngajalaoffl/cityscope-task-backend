@@ -30,7 +30,10 @@ export const getBlogHandler = async (req, res) => {
 
 export const getDashboardHandler = async (req, res) => {
 	try {
-		const data = await aggregateBlogs([{ $match: { isDraft: false } }]);
+		const { city,categories } = req.query
+
+		
+		const data = await aggregateBlogs([{ $match: { isDraft: false, city, category: { $in : categories } } }]);
 		sendSuccessResponse(res, data);
 	} catch (err) {
 		sendErrorResponse(res, err);
@@ -58,6 +61,36 @@ export const likeBlogHandler = async (req, res) => {
 		else likes.push(req.user.id);
 
 		blog.likes = likes;
+
+		await blog.save();
+
+		console.log(blog);
+
+		sendSuccessResponse(res, blog);
+	} catch (err) {
+		sendErrorResponse(res, err);
+	}
+};
+
+export const commentBlogHandler = async (req, res) => {
+	try {
+
+		const {comment} = req.body
+
+		const {blogId} = req.query
+
+		const {id: userId} = req.user
+
+		const blog = await getBlog(req.query.blogId);
+
+		var comments = blog.comments || [];
+
+		comments.push({
+			owner: userId,
+			comment: comment,
+		});
+
+		blog.comments = comments;
 
 		await blog.save();
 

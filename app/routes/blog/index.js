@@ -1,5 +1,6 @@
 import express from "express";
 import { validateInternalUser } from "../../helpers/jwt-helper";
+import { commentBlogHandler } from "./blog-handlers";
 
 import { createBlogHandler, editBlogHandler, getBlogHandler, getDashboardHandler, getDrafts, likeBlogHandler } from "./blog-handlers";
 
@@ -11,5 +12,6 @@ router.get("/get-drafts", validateInternalUser, getDrafts);
 router.get("/get-blog", getBlogHandler);
 router.get("/get-dashboard-data", getDashboardHandler);
 router.get("/like-blog", likeBlogHandler);
+router.get("/comment-blog", commentBlogHandler);
 
 export default router;
