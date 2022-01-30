@@ -30,10 +30,18 @@ export const getBlogHandler = async (req, res) => {
 
 export const getDashboardHandler = async (req, res) => {
 	try {
-		const { city,categories } = req.query
+		const { city, categories } = req.query;
 
-		
-		const data = await aggregateBlogs([{ $match: { isDraft: false, city, category: { $in : categories } } }]);
+		const matches = {};
+
+		matches.isDraft = false;
+
+		if (!!city) matches.city = city;
+
+		if (!!categories) matches.categories = categories;
+
+		const data = await aggregateBlogs([{ $match: matches }]);
+
 		sendSuccessResponse(res, data);
 	} catch (err) {
 		sendErrorResponse(res, err);
@@ -74,14 +82,17 @@ export const likeBlogHandler = async (req, res) => {
 
 export const commentBlogHandler = async (req, res) => {
 	try {
+		const { comment } = req.body;
 
-		const {comment} = req.body
+		const { blogId } = req.query;
 
-		const {blogId} = req.query
+		const { id: userId } = req.user;
 
-		const {id: userId} = req.user
+		console.log(blogId);
 
-		const blog = await getBlog(req.query.blogId);
+		const blog = await getBlog(blogId);
+
+		if (!blog) return sendErrorResponse(res, "Blog not found");
 
 		var comments = blog.comments || [];
 

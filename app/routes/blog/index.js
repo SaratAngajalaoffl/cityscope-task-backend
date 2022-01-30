@@ -12,6 +12,6 @@ router.get("/get-drafts", validateInternalUser, getDrafts);
 router.get("/get-blog", getBlogHandler);
 router.get("/get-dashboard-data", getDashboardHandler);
 router.get("/like-blog", likeBlogHandler);
-router.get("/comment-blog", commentBlogHandler);
+router.post("/comment-blog", commentBlogHandler);
 
 export default router;
