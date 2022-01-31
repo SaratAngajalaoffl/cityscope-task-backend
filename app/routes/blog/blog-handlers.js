@@ -32,13 +32,15 @@ export const getDashboardHandler = async (req, res) => {
 	try {
 		const { city, categories } = req.query;
 
+		console.log(categories);
+
 		const matches = {};
 
 		matches.isDraft = false;
 
 		if (!!city) matches.city = city;
 
-		if (!!categories) matches.categories = categories;
+		if (!!categories) matches.category = { $in: categories.split(",") };
 
 		const data = await aggregateBlogs([{ $match: matches }]);
 
